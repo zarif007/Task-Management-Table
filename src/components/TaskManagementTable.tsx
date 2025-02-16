@@ -4,15 +4,9 @@ import React from "react";
 import Table from "./ui/Table";
 import { Edit, Pickaxe, Plus } from "lucide-react";
 import { ITask } from "@/interfaces/table";
-import {
-  mockData,
-  tableHeaders,
-  taskPriority,
-  taskStatus,
-} from "@/constants/table";
+import { tableHeaders, taskPriority, taskStatus } from "@/constants/table";
 import Select from "./ui/Select";
 import DialogForm from "./ui/Dialog.form";
-import SheetForm from "./ui/Sheet.form";
 import { useTaskManager } from "@/hooks/useTaskManager";
 import { getCurrentDate } from "@/utils/getCurrentDate";
 
@@ -32,32 +26,28 @@ const TaskManagementTable = () => {
     updateTask,
     deleteTask,
     addTask,
-  } = useTaskManager(mockData);
+  } = useTaskManager();
 
   const fields = {
     title: {
-      dialog: (
+      dialog: (type: "create" | "update") => (
         <div key="title">
           <label className={styles.label} htmlFor="title">
             Title
           </label>
           <input
-            value={newTask.title}
+            value={
+              type === "create" ? newTask.title : tasks[editingIndex].title
+            }
             className={styles.input}
-            onChange={(event) => updateNewTask("title", event.target.value)}
-          />
-        </div>
-      ),
-      sheet: (
-        <div key="title" className="flex items-center gap-2 justify-center">
-          <label className={styles.label} htmlFor="title">
-            Title
-          </label>
-          <input
-            value={tasks[editingIndex].title}
-            className={`${styles.input} bg-transparent text-white text-3xl`}
             onChange={(event) =>
-              updateTask(tasks[editingIndex].id, "title", event.target.value)
+              type === "create"
+                ? updateNewTask("title", event.target.value)
+                : updateTask(
+                    tasks[editingIndex].id,
+                    "title",
+                    event.target.value
+                  )
             }
           />
         </div>
@@ -69,7 +59,7 @@ const TaskManagementTable = () => {
             onChange={(e) => updateTask(item.id, "title", e.target.value)}
             className="w-full text-primary bg-transparent border-none h-full focus:outline-none p-4"
           />
-          <SheetForm schema={schemaForSheet}>
+          <DialogForm schema={schemaForDialog("update")}>
             <button
               className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 cursor-pointer m-1"
               onClick={() => setEditingIndex(index)}
@@ -77,36 +67,28 @@ const TaskManagementTable = () => {
               <p>Open</p>
               <Edit className="w-4 h-4" />
             </button>
-          </SheetForm>
+          </DialogForm>
         </div>
       ),
     },
     priority: {
-      dialog: (
+      dialog: (type: "create" | "update") => (
         <div key="priority">
           <label className={styles.label} htmlFor="priority">
             Priority
           </label>
           <div className={`${styles.input} py-0 px-1`}>
             <Select
-              value={newTask.priority}
-              options={taskPriority}
-              onSelect={(value) => updateNewTask("priority", value)}
-            />
-          </div>
-        </div>
-      ),
-      sheet: (
-        <div key="priority" className="flex items-center gap-2 justify-center">
-          <label className={styles.label} htmlFor="priority">
-            Priority
-          </label>
-          <div className={`${styles.input} py-0 px-1 bg-transparent`}>
-            <Select
-              value={tasks[editingIndex].priority}
+              value={
+                type === "create"
+                  ? newTask.priority
+                  : tasks[editingIndex].priority
+              }
               options={taskPriority}
               onSelect={(value) =>
-                updateTask(tasks[editingIndex].id, "priority", value)
+                type === "create"
+                  ? updateNewTask("priority", value)
+                  : updateTask(tasks[editingIndex].id, "priority", value)
               }
             />
           </div>
@@ -121,31 +103,21 @@ const TaskManagementTable = () => {
       ),
     },
     status: {
-      dialog: (
+      dialog: (type: "create" | "update") => (
         <div key="status">
           <label className={styles.label} htmlFor="status">
             Status
           </label>
           <div className={`${styles.input} py-0 px-1`}>
             <Select
-              value={newTask.status}
-              options={taskStatus}
-              onSelect={(value) => updateNewTask("status", value)}
-            />
-          </div>
-        </div>
-      ),
-      sheet: (
-        <div key="status" className="flex items-center gap-2 justify-center">
-          <label className={styles.label} htmlFor="status">
-            Status
-          </label>
-          <div className={`${styles.input} py-0 px-1 bg-transparent`}>
-            <Select
-              value={tasks[editingIndex].status}
+              value={
+                type === "create" ? newTask.status : tasks[editingIndex].status
+              }
               options={taskStatus}
               onSelect={(value) =>
-                updateTask(tasks[editingIndex].id, "status", value)
+                type === "create"
+                  ? updateNewTask("status", value)
+                  : updateTask(tasks[editingIndex].id, "status", value)
               }
             />
           </div>
@@ -166,15 +138,16 @@ const TaskManagementTable = () => {
     },
   };
 
-  const schemaForDialog = {
-    title: `Create a Task`,
-    handleOnSave: addTask,
-    fields: [fields.title.dialog, fields.priority.dialog, fields.status.dialog],
-  };
-
-  const schemaForSheet = {
-    title: `Edit Task`,
-    fields: [fields.title.sheet, fields.priority.sheet, fields.status.sheet],
+  const schemaForDialog = (type: "create" | "update") => {
+    return {
+      title: `${type === "create" ? "Create" : "Edit"} a Task`,
+      handleOnSave: type === "create" ? addTask : () => {},
+      fields: [
+        fields.title.dialog(type),
+        fields.priority.dialog(type),
+        fields.status.dialog(type),
+      ],
+    };
   };
 
   const formattedFieldsForTable = tasks.map((item: ITask, index: number) => [
@@ -190,7 +163,7 @@ const TaskManagementTable = () => {
         <h1 className="text-2xl font-semibold text-gray-300 flex items-center gap-2 my-4">
           <Pickaxe className="w-8 h-8 text-secondary" /> Tasks
         </h1>
-        <DialogForm schema={schemaForDialog}>
+        <DialogForm schema={schemaForDialog("create")}>
           <button className="bg-secondary px-3 py-1 text-black font-semibold rounded-md flex items-center gap-2">
             <Plus className="w-4 h-4" /> Create Task
           </button>

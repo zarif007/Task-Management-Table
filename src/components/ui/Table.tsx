@@ -3,6 +3,8 @@
 import { ITableHeaders } from "@/interfaces/table";
 import React, { JSX, useEffect, useState } from "react";
 import { Checkbox } from "./Checkbox";
+import Pagination from "./Pagination";
+import Select from "./Select";
 
 const Table = ({
   headers,
@@ -15,9 +17,12 @@ const Table = ({
 }) => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [fields, setFields] = useState(formattedFields);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Manage items per page
 
   useEffect(() => {
     setFields(formattedFields);
+    setCurrentPage(1);
   }, [formattedFields]);
 
   const allSelected =
@@ -44,10 +49,16 @@ const Table = ({
     setSelectedRows([]);
   };
 
+  const totalPages = Math.ceil(fields.length / itemsPerPage);
+  const paginatedFields = fields.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
     <div className="w-full overflow-x-auto h-screen">
       <div className="min-w-[800px]">
-        <table className="w-full">
+        <table className="w-full mt-4">
           <thead>
             <tr className="w-full">
               <th className="text-primary font-semibold text-sm border-b border-gray-800 w-1/12">
@@ -69,7 +80,7 @@ const Table = ({
             </tr>
           </thead>
           <tbody>
-            {fields.map((row, rowIndex) => (
+            {paginatedFields.map((row, rowIndex) => (
               <tr
                 key={rowIndex}
                 className={`${
@@ -112,6 +123,20 @@ const Table = ({
             </button>
           </div>
         )}
+        <div className="flex items-center justify-center mt-4">
+          <div className="flex items-center justify-center space-x-4">
+            <Select
+              value={String(itemsPerPage)}
+              options={["5", "10", "15", "20"]}
+              onSelect={(value) => setItemsPerPage(Number(value))}
+            />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

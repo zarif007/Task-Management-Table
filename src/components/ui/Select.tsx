@@ -28,11 +28,11 @@ export default function Select({
               "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
             )}
           >
-            <div className="w-fit bg-secondary text-black px-2 py-1 rounded-lg">
+            <div className="w-fit bg-secondary text-black px-3 py-1 rounded-lg">
               {value}
             </div>
           </ListboxButton>
-          <ListboxOptions className="absolute mt-1 w-full bg-black border border-secondary rounded-lg shadow-lg max-h-60 overflow-auto z-50">
+          <ListboxOptions className="absolute m-1 min-w-[60px] w-full bg-black border border-secondary rounded-lg shadow-lg max-h-60 overflow-auto z-50">
             {options.map((option, index) => (
               <ListboxOption
                 key={index}

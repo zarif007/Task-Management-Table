@@ -1,9 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ITask } from "@/interfaces/table";
 import { getCurrentDate } from "@/utils/getCurrentDate";
+import { mockData } from "@/constants/table";
 
-export const useTaskManager = (initialTasks: ITask[]) => {
-  const [tasks, setTasks] = useState<ITask[]>(initialTasks);
+const getTasksFromLocalStorage = (): ITask[] => {
+  const storedTasks = localStorage.getItem("tasks");
+  return storedTasks ? JSON.parse(storedTasks) : null;
+};
+
+const saveTasksToLocalStorage = (tasks: ITask[]) => {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
+export const useTaskManager = () => {
+  const [tasks, setTasks] = useState<ITask[]>(() => {
+    const storedTasks = getTasksFromLocalStorage();
+    return storedTasks || mockData;
+  });
+
+  useEffect(() => {
+    saveTasksToLocalStorage(tasks);
+  }, [tasks]);
+
   const [newTask, setNewTask] = useState<ITask>({
     id: 0,
     title: "",
@@ -11,6 +29,7 @@ export const useTaskManager = (initialTasks: ITask[]) => {
     status: "not_started",
     createdAt: "",
   });
+
   const [editingIndex, setEditingIndex] = useState<number>(0);
 
   const updateNewTask = (field: keyof ITask, value: string) => {
