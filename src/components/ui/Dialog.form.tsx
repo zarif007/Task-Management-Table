@@ -14,7 +14,7 @@ const DialogForm = ({
   schema: {
     title: string;
     handleOnSave: () => void;
-    components: JSX.Element[];
+    fields: JSX.Element[];
   };
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +54,7 @@ const DialogForm = ({
                 {schema.title}
               </DialogTitle>
               <div className="flex flex-col gap-2 text-gray-400">
-                {schema.components.map((component, index) => (
+                {schema.fields.map((component, index) => (
                   <div key={index}>{component}</div>
                 ))}
               </div>

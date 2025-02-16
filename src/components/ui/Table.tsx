@@ -7,9 +7,11 @@ import { Checkbox } from "./Checkbox";
 const Table = ({
   headers,
   formattedFields,
+  handleDelete,
 }: {
   headers: ITableHeaders[];
   formattedFields: JSX.Element[][];
+  handleDelete: (selectedRows: number[]) => void;
 }) => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [fields, setFields] = useState(formattedFields);
@@ -38,9 +40,7 @@ const Table = ({
   };
 
   const handleDeleteRows = () => {
-    setFields((prevFields) =>
-      prevFields.filter((_, index) => !selectedRows.includes(index))
-    );
+    handleDelete(selectedRows);
     setSelectedRows([]);
   };
 

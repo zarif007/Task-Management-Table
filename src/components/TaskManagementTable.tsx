@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Table from "./ui/Table";
 import { Edit, Pickaxe, Plus } from "lucide-react";
 import { ITask } from "@/interfaces/table";
@@ -12,6 +12,8 @@ import {
 } from "@/constants/table";
 import Select from "./ui/Select";
 import DialogForm from "./ui/Dialog.form";
+import SheetForm from "./ui/Sheet.form";
+import { useTaskManager } from "@/hooks/useTaskManager";
 import { getCurrentDate } from "@/utils/getCurrentDate";
 
 const styles = {
@@ -21,130 +23,169 @@ const styles = {
 };
 
 const TaskManagementTable = () => {
-  const [data, setData] = useState<ITask[]>(mockData);
-  const [newTask, setNewTask] = useState<ITask>({
-    id: 0,
-    title: "",
-    priority: "none",
-    status: "not_started",
-    createdAt: "",
-  });
+  const {
+    tasks,
+    newTask,
+    editingIndex,
+    setEditingIndex,
+    updateNewTask,
+    updateTask,
+    deleteTask,
+    addTask,
+  } = useTaskManager(mockData);
 
-  const handleUpdateNewTask = (field: keyof ITask, value: string) => {
-    setNewTask((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleUpdateDataFromModal = (
-    index: number,
-    field: keyof ITask,
-    value: string
-  ) => {
-    setData((prev) =>
-      prev.map((task, i) => (i === index ? { ...task, [field]: value } : task))
-    );
-  };
-
-  const handleUpdateDataInline = (
-    id: number,
-    field: keyof ITask,
-    value: string
-  ) => {
-    setData((prev) =>
-      prev.map((task) => (task.id === id ? { ...task, [field]: value } : task))
-    );
-  };
-
-  const handleAddNewTask = () => {
-    if (newTask.title) {
-      setData((prev) => [
-        {
-          ...newTask,
-          id: prev.length + 1,
-          createdAt: getCurrentDate(),
-        },
-        ...prev,
-      ]);
-
-      setNewTask({
-        id: 0,
-        title: "",
-        priority: "none",
-        status: "not_started",
-        createdAt: "",
-      });
-    }
+  const fields = {
+    title: {
+      dialog: (
+        <div key="title">
+          <label className={styles.label} htmlFor="title">
+            Title
+          </label>
+          <input
+            value={newTask.title}
+            className={styles.input}
+            onChange={(event) => updateNewTask("title", event.target.value)}
+          />
+        </div>
+      ),
+      sheet: (
+        <div key="title" className="flex items-center gap-2 justify-center">
+          <label className={styles.label} htmlFor="title">
+            Title
+          </label>
+          <input
+            value={tasks[editingIndex].title}
+            className={`${styles.input} bg-transparent text-white text-3xl`}
+            onChange={(event) =>
+              updateTask(tasks[editingIndex].id, "title", event.target.value)
+            }
+          />
+        </div>
+      ),
+      table: (item: ITask, index: number) => (
+        <div className="flex items-center justify-between group w-full">
+          <input
+            value={item.title}
+            onChange={(e) => updateTask(item.id, "title", e.target.value)}
+            className="w-full text-primary bg-transparent border-none h-full focus:outline-none p-4"
+          />
+          <SheetForm schema={schemaForSheet}>
+            <button
+              className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 cursor-pointer m-1"
+              onClick={() => setEditingIndex(index)}
+            >
+              <p>Open</p>
+              <Edit className="w-4 h-4" />
+            </button>
+          </SheetForm>
+        </div>
+      ),
+    },
+    priority: {
+      dialog: (
+        <div key="priority">
+          <label className={styles.label} htmlFor="priority">
+            Priority
+          </label>
+          <div className={`${styles.input} py-0 px-1`}>
+            <Select
+              value={newTask.priority}
+              options={taskPriority}
+              onSelect={(value) => updateNewTask("priority", value)}
+            />
+          </div>
+        </div>
+      ),
+      sheet: (
+        <div key="priority" className="flex items-center gap-2 justify-center">
+          <label className={styles.label} htmlFor="priority">
+            Priority
+          </label>
+          <div className={`${styles.input} py-0 px-1 bg-transparent`}>
+            <Select
+              value={tasks[editingIndex].priority}
+              options={taskPriority}
+              onSelect={(value) =>
+                updateTask(tasks[editingIndex].id, "priority", value)
+              }
+            />
+          </div>
+        </div>
+      ),
+      table: (item: ITask, index: number) => (
+        <Select
+          value={item.priority}
+          options={taskPriority}
+          onSelect={(value) => updateTask(item.id, "priority", value)}
+        />
+      ),
+    },
+    status: {
+      dialog: (
+        <div key="status">
+          <label className={styles.label} htmlFor="status">
+            Status
+          </label>
+          <div className={`${styles.input} py-0 px-1`}>
+            <Select
+              value={newTask.status}
+              options={taskStatus}
+              onSelect={(value) => updateNewTask("status", value)}
+            />
+          </div>
+        </div>
+      ),
+      sheet: (
+        <div key="status" className="flex items-center gap-2 justify-center">
+          <label className={styles.label} htmlFor="status">
+            Status
+          </label>
+          <div className={`${styles.input} py-0 px-1 bg-transparent`}>
+            <Select
+              value={tasks[editingIndex].status}
+              options={taskStatus}
+              onSelect={(value) =>
+                updateTask(tasks[editingIndex].id, "status", value)
+              }
+            />
+          </div>
+        </div>
+      ),
+      table: (item: ITask, index: number) => (
+        <Select
+          value={item.status}
+          options={taskStatus}
+          onSelect={(value) => updateTask(item.id, "status", value)}
+        />
+      ),
+    },
+    createdAt: {
+      table: (item: ITask) => (
+        <div className="p-3.5">{item.createdAt ?? getCurrentDate()}</div>
+      ),
+    },
   };
 
   const schemaForDialog = {
     title: `Create a Task`,
-    handleOnSave: handleAddNewTask,
-    components: [
-      <div key="title">
-        <label className={styles.label} htmlFor="title">
-          Title
-        </label>
-        <input
-          value={newTask.title}
-          className={styles.input}
-          onChange={(event) => handleUpdateNewTask("title", event.target.value)}
-        />
-      </div>,
-      <div key="priority">
-        <label className={styles.label} htmlFor="priority">
-          Priority
-        </label>
-        <div className={`${styles.input} py-0 px-1`}>
-          <Select
-            defaultValue={newTask.priority}
-            options={taskPriority}
-            onSelect={(value) => handleUpdateNewTask("priority", value)}
-          />
-        </div>
-      </div>,
-      <div key="status">
-        <label className={styles.label} htmlFor="status">
-          Status
-        </label>
-        <div className={`${styles.input} py-0 px-1`}>
-          <Select
-            defaultValue={newTask.status}
-            options={taskStatus}
-            onSelect={(value) => handleUpdateNewTask("status", value)}
-          />
-        </div>
-      </div>,
-    ],
+    handleOnSave: addTask,
+    fields: [fields.title.dialog, fields.priority.dialog, fields.status.dialog],
   };
 
-  const formattedFieldsForTable = data.map((item, index) => [
-    <div className="flex items-center justify-between group w-full">
-      <input
-        value={item.title}
-        onChange={(e) =>
-          handleUpdateDataInline(item.id, "title", e.target.value)
-        }
-        className="w-full text-primary bg-transparent border-none h-full focus:outline-none p-4"
-      />
-      <button className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 cursor-pointer m-1">
-        <p>Open</p>
-        <Edit className="w-4 h-4" />
-      </button>
-    </div>,
-    <Select
-      defaultValue={item.priority}
-      options={taskPriority}
-      onSelect={(value) => handleUpdateDataInline(item.id, "priority", value)}
-    />,
-    <Select
-      defaultValue={item.status}
-      options={taskStatus}
-      onSelect={(value) => handleUpdateDataInline(item.id, "status", value)}
-    />,
-    <div className="p-3.5">{item.createdAt ?? "February 14, 2025"}</div>,
+  const schemaForSheet = {
+    title: `Edit Task`,
+    fields: [fields.title.sheet, fields.priority.sheet, fields.status.sheet],
+  };
+
+  const formattedFieldsForTable = tasks.map((item: ITask, index: number) => [
+    fields.title.table(item, index),
+    fields.priority.table(item, index),
+    fields.status.table(item, index),
+    fields.createdAt.table(item),
   ]);
 
   return (
-    <div className="h-screen max-w-7xl mx-auto flex flex-col justify-center my-12 md:my-24">
+    <div className="h-screen max-w-7xl mx-auto flex flex-col justify-center px-4 my-12 md:my-24">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-gray-300 flex items-center gap-2 my-4">
           <Pickaxe className="w-8 h-8 text-secondary" /> Tasks
@@ -155,7 +196,11 @@ const TaskManagementTable = () => {
           </button>
         </DialogForm>
       </div>
-      <Table headers={tableHeaders} formattedFields={formattedFieldsForTable} />
+      <Table
+        headers={tableHeaders}
+        formattedFields={formattedFieldsForTable}
+        handleDelete={deleteTask}
+      />
     </div>
   );
 };

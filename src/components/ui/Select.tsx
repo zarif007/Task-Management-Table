@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Listbox,
   ListboxButton,
@@ -10,24 +10,17 @@ import {
 import clsx from "clsx";
 
 export default function Select({
-  defaultValue,
+  value,
   options,
   onSelect,
 }: {
-  defaultValue: string;
+  value: string;
   options: string[];
   onSelect?: (value: string) => void;
 }) {
-  const [selected, setSelected] = useState(defaultValue);
-
-  const handleChange = (value: string) => {
-    setSelected(value);
-    onSelect?.(value);
-  };
-
   return (
     <div className={clsx("w-full relative p-2.5 text-white")}>
-      <Listbox value={selected} onChange={handleChange}>
+      <Listbox value={value} onChange={onSelect}>
         <div className="relative">
           <ListboxButton
             className={clsx(
@@ -36,7 +29,7 @@ export default function Select({
             )}
           >
             <div className="w-fit bg-secondary text-black px-2 py-1 rounded-lg">
-              {selected}
+              {value}
             </div>
           </ListboxButton>
           <ListboxOptions className="absolute mt-1 w-full bg-black border border-secondary rounded-lg shadow-lg max-h-60 overflow-auto z-50">
