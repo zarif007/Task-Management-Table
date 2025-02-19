@@ -18,7 +18,7 @@ const Table = ({
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [fields, setFields] = useState(formattedFields);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // Manage items per page
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   useEffect(() => {
     setFields(formattedFields);
@@ -72,7 +72,6 @@ const Table = ({
                   className="text-primary font-semibold py-3.5 px-4 text-sm border-b border-gray-800"
                 >
                   <div className="flex items-center justify-start gap-2">
-                    {header.icon}
                     {header.label}
                   </div>
                 </th>

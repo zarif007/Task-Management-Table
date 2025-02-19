@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Table from "./ui/Table";
 import { Edit, Pickaxe, Plus } from "lucide-react";
 import { ITask } from "@/interfaces/table";
@@ -28,6 +28,32 @@ const TaskManagementTable = () => {
     addTask,
   } = useTaskManager();
 
+  const [fieldSchema, setFieldSchema] = useState([
+    {
+      header: "Title",
+      component: "Input",
+      type: "text",
+      name: "title",
+      style:
+        "w-full text-primary bg-transparent border-none h-full focus:outline-none p-4",
+      isDialogOpener: true,
+      isSortAble: true,
+    },
+    {
+      header: "Priority",
+      component: "Select",
+      options: taskPriority,
+      name: "priority",
+      isDialogOpener: true,
+    },
+    {
+      header: "Status",
+      component: "Select",
+      options: taskStatus,
+      name: "status",
+    },
+  ]);
+
   const fields = {
     title: {
       dialog: (type: "create" | "update") => (
@@ -50,24 +76,6 @@ const TaskManagementTable = () => {
                   )
             }
           />
-        </div>
-      ),
-      table: (item: ITask, index: number) => (
-        <div className="flex items-center justify-between group w-full">
-          <input
-            value={item.title}
-            onChange={(e) => updateTask(item.id, "title", e.target.value)}
-            className="w-full text-primary bg-transparent border-none h-full focus:outline-none p-4"
-          />
-          <DialogForm schema={schemaForDialog("update")}>
-            <button
-              className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 cursor-pointer m-1"
-              onClick={() => setEditingIndex(index)}
-            >
-              <p>Open</p>
-              <Edit className="w-4 h-4" />
-            </button>
-          </DialogForm>
         </div>
       ),
     },
@@ -94,13 +102,6 @@ const TaskManagementTable = () => {
           </div>
         </div>
       ),
-      table: (item: ITask, index: number) => (
-        <Select
-          value={item.priority}
-          options={taskPriority}
-          onSelect={(value) => updateTask(item.id, "priority", value)}
-        />
-      ),
     },
     status: {
       dialog: (type: "create" | "update") => (
@@ -123,13 +124,6 @@ const TaskManagementTable = () => {
           </div>
         </div>
       ),
-      table: (item: ITask, index: number) => (
-        <Select
-          value={item.status}
-          options={taskStatus}
-          onSelect={(value) => updateTask(item.id, "status", value)}
-        />
-      ),
     },
     createdAt: {
       table: (item: ITask) => (
@@ -150,12 +144,65 @@ const TaskManagementTable = () => {
     };
   };
 
-  const formattedFieldsForTable = tasks.map((item: ITask, index: number) => [
-    fields.title.table(item, index),
-    fields.priority.table(item, index),
-    fields.status.table(item, index),
-    fields.createdAt.table(item),
-  ]);
+  // const editingDialog = (
+  //   <DialogForm schema={schemaForDialog("update")}>
+  //     <button
+  //       className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 cursor-pointer m-1"
+  //       onClick={() => setEditingIndex(index)}
+  //     >
+  //       <p>Open</p>
+  //       <Edit className="w-4 h-4" />
+  //     </button>
+  //   </DialogForm>
+  // );
+
+  const renderInputForTable = (item: any, index: number, field: any) => {
+    switch (field.component) {
+      case "Input":
+        return (
+          <div className="flex items-center justify-between group w-full">
+            <input
+              type={field.type}
+              value={item[field.name]}
+              onChange={(e) => updateTask(item.id, field.name, e.target.value)}
+              className={field.style}
+            />
+          </div>
+        );
+
+      case "Select":
+        return (
+          <div className="flex items-center justify-between group w-full">
+            <Select
+              value={item[field.name]}
+              onSelect={(value) => updateTask(item.id, field.name, value)}
+              options={field.options}
+            />
+          </div>
+        );
+
+      case "Checkbox":
+        return (
+          <div className="flex items-center justify-between group w-full">
+            <input
+              type="checkbox"
+              checked={item[field.name]}
+              onChange={(e) =>
+                updateTask(item.id, field.name, e.target.checked)
+              }
+              className={field.style}
+            />
+          </div>
+        );
+
+      default:
+        return <div className={styles.input} />;
+    }
+  };
+
+  const formattedFieldsForTable = tasks.map((item: ITask, index: number) =>
+    fieldSchema.map((field) => renderInputForTable(item, index, field))
+  );
 
   return (
     <div className="h-screen max-w-7xl mx-auto flex flex-col justify-center px-4 my-12 md:my-24">

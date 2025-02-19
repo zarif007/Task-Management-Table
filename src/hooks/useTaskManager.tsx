@@ -36,7 +36,11 @@ export const useTaskManager = () => {
     setNewTask((prev) => ({ ...prev, [field]: value }));
   };
 
-  const updateTask = (id: number, field: keyof ITask, value: string) => {
+  const updateTask = (
+    id: number,
+    field: keyof ITask,
+    value: string | boolean
+  ) => {
     setTasks((prev) =>
       prev.map((task) => (task.id === id ? { ...task, [field]: value } : task))
     );
