@@ -1,14 +1,17 @@
-import { JSX } from "react";
-
 export interface ITask {
   id: number;
   title: string;
   priority: string;
   status: string;
-  createdAt?: string;
+  [key: string]: string | number | boolean;
 }
 
-export interface ITableHeaders {
-  label: string;
-  icon: JSX.Element;
+export interface IComponentConfig {
+  header: string;
+  component: string;
+  type: string;
+  name: string;
+  isDialogOpener?: boolean;
+  isSortAble?: boolean;
+  isDeletAble?: boolean;
 }

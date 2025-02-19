@@ -1,10 +1,7 @@
 "use client";
 
-import { ITableHeaders, ITask } from "@/interfaces/table";
-import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import React, { JSX, useState } from "react";
-import Select from "./Select";
-import { taskPriority, taskStatus } from "@/constants/table";
 
 const DialogForm = ({
   children,

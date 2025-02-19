@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { ITask } from "@/interfaces/table";
+import { IComponentConfig, ITask } from "@/interfaces/table";
 import { getCurrentDate } from "@/utils/getCurrentDate";
-import { mockData } from "@/constants/table";
+import { mockData, taskPriority, taskStatus } from "@/constants/table";
 
 const getTasksFromLocalStorage = (): ITask[] => {
   const storedTasks = localStorage.getItem("tasks");
@@ -12,15 +12,63 @@ const saveTasksToLocalStorage = (tasks: ITask[]) => {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+const getFieldSchemaFromLocalStorage = () => {
+  const storedFieldSchema = localStorage.getItem("fieldSchema");
+  return storedFieldSchema ? JSON.parse(storedFieldSchema) : null;
+};
+
+const saveFieldSchemaToLocalStorage = (fieldSchema: IComponentConfig[]) => {
+  localStorage.setItem("fieldSchema", JSON.stringify(fieldSchema));
+};
+
 export const useTaskManager = () => {
   const [tasks, setTasks] = useState<ITask[]>(() => {
     const storedTasks = getTasksFromLocalStorage();
     return storedTasks || mockData;
   });
 
+  const [fieldSchema, setFieldSchema] = useState<IComponentConfig[]>(() => {
+    const storedFieldSchema = getFieldSchemaFromLocalStorage();
+    return (
+      storedFieldSchema || [
+        {
+          header: "Title",
+          component: "Input",
+          type: "text",
+          name: "title",
+          isDialogOpener: true,
+          isSortAble: true,
+          isDeletAble: false,
+        },
+        {
+          header: "Priority",
+          component: "Select",
+          options: taskPriority,
+          name: "priority",
+          isDialogOpener: false,
+          isSortAble: false,
+          isDeletAble: false,
+        },
+        {
+          header: "Status",
+          component: "Select",
+          options: taskStatus,
+          name: "status",
+          isDialogOpener: false,
+          isSortAble: false,
+          isDeletAble: false,
+        },
+      ]
+    );
+  });
+
   useEffect(() => {
     saveTasksToLocalStorage(tasks);
   }, [tasks]);
+
+  useEffect(() => {
+    saveFieldSchemaToLocalStorage(fieldSchema);
+  }, [fieldSchema]);
 
   const [newTask, setNewTask] = useState<ITask>({
     id: 0,
@@ -32,14 +80,14 @@ export const useTaskManager = () => {
 
   const [editingIndex, setEditingIndex] = useState<number>(0);
 
-  const updateNewTask = (field: keyof ITask, value: string) => {
+  const updateNewTask = (field: string, value: string | number | boolean) => {
     setNewTask((prev) => ({ ...prev, [field]: value }));
   };
 
   const updateTask = (
     id: number,
-    field: keyof ITask,
-    value: string | boolean
+    field: string,
+    value: string | boolean | number
   ) => {
     setTasks((prev) =>
       prev.map((task) => (task.id === id ? { ...task, [field]: value } : task))
@@ -82,5 +130,7 @@ export const useTaskManager = () => {
     updateTask,
     deleteTask,
     addTask,
+    fieldSchema,
+    setFieldSchema,
   };
 };
