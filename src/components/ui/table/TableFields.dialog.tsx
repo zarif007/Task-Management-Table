@@ -154,7 +154,7 @@ const TableFieldsDialog = ({
                 </div>
                 <div>
                   <label className={styles.label}>Field Type</label>
-                  <div className={`${styles.input} p-0`}>
+                  <div className={`${styles.input} py-0 px-1`}>
                     <Select
                       value={newField.type}
                       onSelect={(value) => handleUpdateInput("type", value)}

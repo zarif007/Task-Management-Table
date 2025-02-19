@@ -4,36 +4,28 @@ import React, { useState, useCallback, useEffect, useMemo } from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
+import { ITask } from "@/interfaces/task";
 
 interface TableProps {
-  items: any[];
-  fieldSchema: any[];
-  setFieldSchema: any;
-  handleDelete: (selectedRows: number[]) => void;
-  handleUpdate: (
-    id: number,
-    field: string,
-    value: string | boolean | number
-  ) => void;
+  store: any;
   editingDialog: (index: number) => React.JSX.Element;
 }
 
-const Table: React.FC<TableProps> = ({
-  items,
-  fieldSchema,
-  setFieldSchema,
-  handleDelete,
-  handleUpdate,
-  editingDialog,
-}) => {
+const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
+  const {
+    items,
+    fieldSchema,
+    setFieldSchema,
+    deleteItem: handleDelete,
+    updateItem: handleUpdate,
+  } = store;
+
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [sortedItems, setSortedItems] = useState<any[]>(items);
-
-  // USe zustand here=============================
 
   useEffect(() => {
     setSortedItems(items);
@@ -45,7 +37,9 @@ const Table: React.FC<TableProps> = ({
 
   const toggleAll = useCallback(
     (checked: boolean) => {
-      setSelectedRows(checked ? items.map((_, index) => index) : []);
+      setSelectedRows(
+        checked ? items.map((_: ITask, index: number) => index) : []
+      );
     },
     [items]
   );

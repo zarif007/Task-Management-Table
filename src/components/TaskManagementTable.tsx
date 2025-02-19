@@ -1,54 +1,50 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import Table from "./ui/table/Table";
 import { Edit, Pickaxe, Plus } from "lucide-react";
 import DialogForm from "./ui/Dialog.form";
-import { useTaskManager } from "@/hooks/useTaskManager";
 import { fieldMappingForDialog } from "./FieldMappings";
+import { useItemStore } from "@/store/taskManagement";
 
 const TaskManagementTable = () => {
-  const {
-    tasks,
-    newTask,
-    editingIndex,
-    setEditingIndex,
-    updateNewTask,
-    updateTask,
-    deleteTask,
-    addTask,
-    fieldSchema,
-    setFieldSchema,
-  } = useTaskManager();
+  const store = useItemStore();
 
-  const schemaForDialog = (type: "create" | "update") => {
-    return {
+  const schemaForDialog = useCallback(
+    (type: "create" | "update", index?: number) => ({
       title: `${type === "create" ? "Create" : "Edit"} a Task`,
-      handleOnSave: type === "create" ? addTask : () => {},
-      fields: fieldSchema.map((field) =>
+      handleOnSave:
+        type === "create"
+          ? store.addItem
+          : () => store.updateItem(store.items[index!].id, "", ""),
+      fields: store.fieldSchema.map((field) =>
         fieldMappingForDialog({
           field,
           type,
-          newItem: newTask,
-          items: tasks,
-          editingIndex,
-          updateNewItem: updateNewTask,
-          updateItem: updateTask,
+          newItem: store.newItem,
+          items: store.items,
+          editingIndex: store.editingIndex,
+          updateNewItem: store.updateNewItem,
+          updateItem: store.updateItem,
         })
       ),
-    };
-  };
+    }),
+    [store]
+  );
 
-  const editingDialog = (index: number) => (
-    <DialogForm schema={schemaForDialog("update")}>
-      <button
-        className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 cursor-pointer m-1"
-        onClick={() => setEditingIndex(index)}
-      >
-        <p>Open</p>
-        <Edit className="w-4 h-4" />
-      </button>
-    </DialogForm>
+  const editingDialog = useCallback(
+    (index: number) => (
+      <DialogForm schema={schemaForDialog("update", index)}>
+        <button
+          className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 cursor-pointer m-1"
+          onClick={() => store.setEditingIndex(index)}
+        >
+          <p>Open</p>
+          <Edit className="w-4 h-4" />
+        </button>
+      </DialogForm>
+    ),
+    [store, schemaForDialog]
   );
 
   return (
@@ -63,14 +59,7 @@ const TaskManagementTable = () => {
           </button>
         </DialogForm>
       </div>
-      <Table
-        items={tasks}
-        fieldSchema={fieldSchema}
-        setFieldSchema={setFieldSchema}
-        handleDelete={deleteTask}
-        handleUpdate={updateTask}
-        editingDialog={editingDialog}
-      />
+      <Table store={store} editingDialog={editingDialog} />
     </div>
   );
 };

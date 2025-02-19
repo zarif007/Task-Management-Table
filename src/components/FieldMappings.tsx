@@ -34,10 +34,7 @@ interface DialogFieldMappingProps {
   newItem: Item;
   items: Item[] | [];
   editingIndex: number;
-  updateNewItem: (
-    field: string,
-    value: string | number | boolean
-  ) => void | null;
+  updateNewItem: (field: string, value: string | number | boolean) => void;
   updateItem: (
     id: number,
     field: string,
@@ -58,9 +55,15 @@ const getCurrentValue = (
   tasks: Item[],
   editingIndex: number
 ) => {
-  return type === "create"
-    ? newTask[fieldName]
-    : tasks[editingIndex][fieldName];
+  if (type === "create") {
+    return newTask[fieldName];
+  } else {
+    if (tasks.length > 0 && editingIndex >= 0 && editingIndex < tasks.length) {
+      return tasks[editingIndex][fieldName] ?? "";
+    } else {
+      return "";
+    }
+  }
 };
 
 const handleUpdate = (
