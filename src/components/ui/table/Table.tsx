@@ -4,10 +4,10 @@ import React, { useState, useCallback, useEffect, useMemo } from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
-import { ITask } from "@/interfaces/task";
+import { IItem, ItemStore } from "@/interfaces/store";
 
 interface TableProps {
-  store: any;
+  store: ItemStore;
   editingDialog: (index: number) => React.JSX.Element;
 }
 
@@ -38,7 +38,7 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
   const toggleAll = useCallback(
     (checked: boolean) => {
       setSelectedRows(
-        checked ? items.map((_: ITask, index: number) => index) : []
+        checked ? items.map((_: IItem, index: number) => index) : []
       );
     },
     [items]

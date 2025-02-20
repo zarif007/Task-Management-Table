@@ -2,15 +2,7 @@ import { CheckedState } from "@radix-ui/react-checkbox";
 import { Checkbox } from "./ui/Checkbox";
 import Select from "./ui/Select";
 import React from "react";
-
-interface Field {
-  component: string;
-  name: string;
-  type?: string;
-  options?: string[];
-  isDialogOpener?: boolean;
-  header?: string;
-}
+import { IComponentConfig } from "@/interfaces/task";
 
 interface Item {
   id: number;
@@ -20,7 +12,7 @@ interface Item {
 interface FieldMappingProps {
   item: Item;
   index: number;
-  field: Field;
+  field: IComponentConfig;
   handleUpdate: (
     id: number,
     fieldName: string,
@@ -29,7 +21,7 @@ interface FieldMappingProps {
 }
 
 interface DialogFieldMappingProps {
-  field: Field;
+  field: IComponentConfig;
   type: "create" | "update";
   newItem: Item;
   items: Item[] | [];

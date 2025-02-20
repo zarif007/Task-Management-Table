@@ -1,10 +1,4 @@
-export interface ITask {
-  id: number;
-  title: string;
-  priority: string;
-  status: string;
-  [key: string]: string | number | boolean;
-}
+import { IItem } from "./store";
 
 export interface IComponentConfig {
   header: string;
@@ -18,10 +12,14 @@ export interface IComponentConfig {
 }
 
 export type TaskStore = {
-  items: ITask[];
+  items: IItem[];
   fieldSchema: string[];
-  setFieldSchema: (schema: string[]) => void;
-  addItem: (item: ITask) => void;
-  updateItem: (id: number, field: string, value: any) => void;
+  setFieldSchema: (schema: IComponentConfig[]) => void;
+  addItem: (item: IItem) => void;
+  updateItem: (
+    id: number,
+    field: string,
+    value: string | boolean | number
+  ) => void;
   deleteItems: (ids: number[]) => void;
 };

@@ -4,10 +4,11 @@ import DialogForm from "../Dialog.form";
 import { Plus, Settings } from "lucide-react";
 import { fieldMappingForDialog } from "../../FieldMappings";
 import TableFieldsDialog from "./TableFields.dialog";
+import { IComponentConfig } from "@/interfaces/task";
 
 interface TableHeaderProps {
-  fieldSchema: any[];
-  setFieldSchema: any;
+  fieldSchema: IComponentConfig[];
+  setFieldSchema: (fieldSchema: IComponentConfig[]) => void;
   allSelected: boolean;
   toggleAll: (checked: boolean) => void;
   handleSort: (fieldName: string) => void;

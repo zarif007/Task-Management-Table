@@ -9,7 +9,6 @@ import { useItemStore } from "@/store/taskManagement";
 
 const TaskManagementTable = () => {
   const store = useItemStore();
-
   const schemaForDialog = useCallback(
     (type: "create" | "update", index?: number) => ({
       title: `${type === "create" ? "Create" : "Edit"} a Task`,

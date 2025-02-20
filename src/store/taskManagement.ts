@@ -1,24 +1,27 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { IComponentConfig, ITask } from "@/interfaces/task";
+import { IComponentConfig } from "@/interfaces/task";
 import { getCurrentDate } from "@/utils/getCurrentDate";
 import { mockData, taskPriority, taskStatus } from "@/constants/table";
+import { IItem } from "@/interfaces/store";
 
 interface ItemStore {
-  items: ITask[];
+  items: IItem[];
   fieldSchema: IComponentConfig[];
-  newItem: ITask;
+  newItem: IItem;
   editingIndex: number;
   setEditingIndex: (index: number) => void;
-  updateNewItem: (field: keyof ITask, value: string | boolean | number) => void;
+  updateNewItem: (field: keyof IItem, value: string | boolean | number) => void;
   updateItem: (
     id: number,
-    field: keyof ITask,
+    field: keyof IItem,
     value: string | boolean | number
   ) => void;
   deleteItem: (selectedRows: number[]) => void;
   addItem: () => void;
   setFieldSchema: (fieldSchema: IComponentConfig[]) => void;
+  _hasHydrated: boolean;
+  setHasHydrated: (hasHydrated: boolean) => void;
 }
 
 const defaultFieldSchema: IComponentConfig[] = [
@@ -54,7 +57,7 @@ const defaultFieldSchema: IComponentConfig[] = [
 export const useItemStore = create<ItemStore>()(
   persist(
     (set, get) => ({
-      items: mockData,
+      items: [], // Initialize with an empty array
       fieldSchema: defaultFieldSchema,
       newItem: {
         id: 0,
@@ -64,6 +67,7 @@ export const useItemStore = create<ItemStore>()(
         createdAt: "",
       },
       editingIndex: 0,
+      _hasHydrated: false,
       setEditingIndex: (index) => set({ editingIndex: index }),
       updateNewItem: (field, value) =>
         set((state) => ({
@@ -101,6 +105,7 @@ export const useItemStore = create<ItemStore>()(
           };
         }),
       setFieldSchema: (fieldSchema) => set({ fieldSchema }),
+      setHasHydrated: (hasHydrated) => set({ _hasHydrated: hasHydrated }),
     }),
     {
       name: "task-storage",
@@ -108,6 +113,9 @@ export const useItemStore = create<ItemStore>()(
         items: state.items,
         fieldSchema: state.fieldSchema,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

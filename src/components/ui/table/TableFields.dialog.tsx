@@ -2,17 +2,48 @@ import React, { useState } from "react";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import Select from "../Select";
 import { Checkbox } from "../Checkbox";
+import { IComponentConfig } from "@/interfaces/task";
 
-const TableFieldsDialog = ({
-  children,
+const ExistingFields = ({
   fieldSchema,
-  setFieldSchema,
+  onDeleteField,
 }: {
-  children: React.ReactNode;
-  fieldSchema: any;
-  setFieldSchema: (schema: any) => void;
+  fieldSchema: IComponentConfig[];
+  onDeleteField: (index: number) => void;
+}) => (
+  <div className="space-y-4">
+    {fieldSchema.map((field, index) => (
+      <div
+        key={index}
+        className="flex items-center justify-between p-3 bg-gray-800 rounded-lg"
+      >
+        <div>
+          <p className="text-white font-medium">{field.header}</p>
+          <p className="text-gray-400 text-sm">Component: {field.component}</p>
+          {field.options && (
+            <p className="text-gray-400 text-sm">
+              Options: {field.options.join(", ")}
+            </p>
+          )}
+        </div>
+        {field.isDeletAble && (
+          <button
+            onClick={() => onDeleteField(index)}
+            className="text-red-500 hover:text-red-600"
+          >
+            Delete
+          </button>
+        )}
+      </div>
+    ))}
+  </div>
+);
+
+const CreateField = ({
+  onAddField,
+}: {
+  onAddField: (newFieldObject: IComponentConfig) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [newField, setNewField] = useState({
     id: 0,
     name: "",
@@ -27,29 +58,15 @@ const TableFieldsDialog = ({
     label: "text-primary font-semibold text-sm",
   };
 
-  const open = () => {
-    setIsOpen(true);
-  };
-
-  const close = () => {
-    setIsOpen(false);
-  };
-
   const handleUpdateInput = (field: string, value: string | boolean) => {
     setNewField((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleAddNewField = () => {
-    const isFieldExists = fieldSchema.some(
-      (field: any) =>
-        field.name === newField.name.toLowerCase().replace(/\s+/g, "_")
-    );
-
-    if (isFieldExists) {
-      alert("Field with this name already exists!");
+    if (!newField.name.trim()) {
+      alert("Field name cannot be empty!");
       return;
     }
-
     const component =
       newField.type === "Text" || newField.type === "Number"
         ? "Input"
@@ -59,7 +76,7 @@ const TableFieldsDialog = ({
         ? newField.type.toLowerCase()
         : "checkbox";
 
-    const newFieldObject = {
+    const newFieldObject: IComponentConfig = {
       header: newField.name,
       component: component,
       type: type,
@@ -69,8 +86,9 @@ const TableFieldsDialog = ({
       isDeletAble: true,
     };
 
-    setFieldSchema((prevSchema: any) => [...prevSchema, newFieldObject]);
+    onAddField(newFieldObject);
 
+    // Reset form
     setNewField({
       id: 0,
       name: "",
@@ -80,15 +98,85 @@ const TableFieldsDialog = ({
     });
   };
 
+  return (
+    <div className="mt-6 space-y-4">
+      <h3 className="font-bold text-lg text-white mb-4">Create New Field</h3>
+      <div>
+        <label className={styles.label}>Field Name</label>
+        <input
+          type="text"
+          value={newField.name}
+          onChange={(e) => handleUpdateInput("name", e.target.value)}
+          className={styles.input}
+          placeholder="Enter field name"
+        />
+      </div>
+      <div>
+        <label className={styles.label}>Field Type</label>
+        <div className={`${styles.input} py-0 px-1`}>
+          <Select
+            value={newField.type}
+            onSelect={(value) => handleUpdateInput("type", value)}
+            options={["Text", "Number", "Checkbox"]}
+          />
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <label className={styles.label}>Is Dialog Opener</label>
+        <Checkbox
+          checked={newField.isDialogOpener}
+          onCheckedChange={(value) =>
+            handleUpdateInput("isDialogOpener", value)
+          }
+        />
+      </div>
+      <div className="flex items-center gap-4">
+        <label className={styles.label}>Is Sortable</label>
+        <Checkbox
+          checked={newField.isSortAble}
+          onCheckedChange={(value) => handleUpdateInput("isSortAble", value)}
+        />
+      </div>
+      <button
+        onClick={handleAddNewField}
+        className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+      >
+        Add Field
+      </button>
+    </div>
+  );
+};
+
+const TableFieldsDialog = ({
+  children,
+  fieldSchema,
+  setFieldSchema,
+}: {
+  children: React.ReactNode;
+  fieldSchema: IComponentConfig[];
+  setFieldSchema: (schema: IComponentConfig[]) => void;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
+
   const handleDeleteField = (index: number) => {
-    const updatedSchema = fieldSchema.filter(
-      (_: any, i: number) => i !== index
-    );
+    const updatedSchema = fieldSchema.filter((_, i) => i !== index);
     setFieldSchema(updatedSchema);
   };
 
-  const handleOnSave = () => {
-    close();
+  const handleAddField = (newFieldObject: IComponentConfig) => {
+    const isFieldExists = fieldSchema.some(
+      (field) => field.name === newFieldObject.name
+    );
+
+    if (isFieldExists) {
+      alert("Field with this name already exists!");
+      return;
+    }
+
+    setFieldSchema([...fieldSchema, newFieldObject]);
   };
 
   return (
@@ -112,81 +200,13 @@ const TableFieldsDialog = ({
               >
                 Fields
               </DialogTitle>
-              <div className="space-y-4">
-                {fieldSchema.map((field: any, index: number) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-gray-800 rounded-lg"
-                  >
-                    <div>
-                      <p className="text-white font-medium">{field.header}</p>
-                      <p className="text-gray-400 text-sm">
-                        Component: {field.component}
-                      </p>
-                      {field.options && (
-                        <p className="text-gray-400 text-sm">
-                          Options: {field.options.join(", ")}
-                        </p>
-                      )}
-                    </div>
-                    {field.isDeletAble && (
-                      <button
-                        onClick={() => handleDeleteField(index)}
-                        className="text-red-500 hover:text-red-600"
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
 
-              <div className="mt-6 space-y-4">
-                <div>
-                  <label className={styles.label}>Field Name</label>
-                  <input
-                    type="text"
-                    value={newField.name}
-                    onChange={(e) => handleUpdateInput("name", e.target.value)}
-                    className={styles.input}
-                    placeholder="Enter field name"
-                  />
-                </div>
-                <div>
-                  <label className={styles.label}>Field Type</label>
-                  <div className={`${styles.input} py-0 px-1`}>
-                    <Select
-                      value={newField.type}
-                      onSelect={(value) => handleUpdateInput("type", value)}
-                      options={["Text", "Number", "Checkbox"]}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <label className={styles.label}>Is Dialog Opener</label>
-                  <Checkbox
-                    checked={newField.isDialogOpener}
-                    onCheckedChange={(value) =>
-                      handleUpdateInput("isDialogOpener", value)
-                    }
-                  />
-                </div>
-                <div className="flex items-center gap-4">
-                  <label className={styles.label}>Is Sortable</label>
-                  <Checkbox
-                    checked={newField.isSortAble}
-                    onCheckedChange={(value) =>
-                      handleUpdateInput("isSortAble", value)
-                    }
-                  />
-                </div>
-                <button
-                  onClick={handleAddNewField}
-                  className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
-                  Add Field
-                </button>
-              </div>
+              <ExistingFields
+                fieldSchema={fieldSchema}
+                onDeleteField={handleDeleteField}
+              />
+
+              <CreateField onAddField={handleAddField} />
 
               <div className="mt-4 flex justify-end gap-2 font-semibold">
                 <button
@@ -197,7 +217,7 @@ const TableFieldsDialog = ({
                 </button>
                 <button
                   className="rounded-md px-3 py-2 bg-secondary text-black"
-                  onClick={handleOnSave}
+                  onClick={close}
                 >
                   Save
                 </button>

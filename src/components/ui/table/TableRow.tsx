@@ -1,11 +1,13 @@
 import React from "react";
 import { Checkbox } from "../Checkbox";
 import { fieldMappingForTable } from "../../FieldMappings";
+import { IItem } from "@/interfaces/store";
+import { IComponentConfig } from "@/interfaces/task";
 
 interface TableRowProps {
-  item: any;
+  item: IItem;
   index: number;
-  fieldSchema: any[];
+  fieldSchema: IComponentConfig[];
   selectedRows: number[];
   toggleRow: (rowIndex: number) => void;
   handleUpdate: (
@@ -35,7 +37,7 @@ const TableRow: React.FC<TableRowProps> = ({
           />
         </div>
       </td>
-      {fieldSchema.map((field: any, colIndex: number) => (
+      {fieldSchema.map((field, colIndex) => (
         <td
           key={colIndex}
           className="text-md font-semibold text-primary border-b border-gray-800"
