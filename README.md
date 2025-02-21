@@ -1,5 +1,3 @@
-![Task Management Banner](https://i.ibb.co/0yTGdw02/Screenshot-2025-02-22-at-2-49-25-AM.png)
-
 # 📝 Task Management
 
 ## ✨ What’s This?
@@ -62,6 +60,12 @@ You can **add, edit, delete, and manage tasks** effortlessly, with extra goodies
 
 The goal is to **keep things clean, intuitive, and hassle-free**.  
 No unnecessary complexity—just **smooth task management** that works.
+
+---
+
+## 🎨 UI Inspiration
+
+The **UI design** of this task manager is inspired by [Great Frontend](https://www.greatfrontend.com/), ensuring that it’s both **minimalistic** and **user-friendly**, while also delivering an engaging experience.
 
 ---
 

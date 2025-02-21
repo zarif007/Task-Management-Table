@@ -7,7 +7,7 @@ interface KanbanProps {
   basedOn: string;
   columns: string[];
   store: IItemStore;
-  editingDialog: (id: number, opacity: number) => React.JSX.Element;
+  editingDialog: (id: number) => React.JSX.Element;
   schemaForDialog: (
     type: "create" | "update",
     id?: number
@@ -119,7 +119,7 @@ const Kanban: React.FC<KanbanProps> = ({
                 <div
                   key={item.id}
                   data-item-id={item.id}
-                  className={`relative text-white bg-gray-800 font-semibold text-sm p-3 my-2 cursor-move rounded-md transform transition-all duration-200 ease-in-out ${
+                  className={`group relative text-white bg-gray-800 font-semibold text-sm p-3 my-2 cursor-move rounded-md transform transition-all duration-200 ease-in-out ${
                     draggedItemId === item.id
                       ? "opacity-50"
                       : dragOverItemId === item.id
@@ -153,7 +153,7 @@ const Kanban: React.FC<KanbanProps> = ({
                       >
                         <Trash2 size={16} />
                       </button>
-                      {editingDialog(item.id, 100)}
+                      {editingDialog(item.id)}{" "}
                     </div>
                   )}
                 </div>
