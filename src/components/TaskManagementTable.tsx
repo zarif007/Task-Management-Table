@@ -10,33 +10,35 @@ import { useItemStore } from "@/store/taskManagement";
 const TaskManagementTable = () => {
   const store = useItemStore();
   const schemaForDialog = useCallback(
-    (type: "create" | "update", index?: number) => ({
-      title: `${type === "create" ? "Create" : "Edit"} a Task`,
-      handleOnSave:
-        type === "create"
-          ? store.addItem
-          : () => store.updateItem(store.items[index!].id, "", ""),
-      fields: store.fieldSchema.map((field) =>
-        fieldMappingForDialog({
-          field,
-          type,
-          newItem: store.newItem,
-          items: store.items,
-          editingIndex: store.editingIndex,
-          updateNewItem: store.updateNewItem,
-          updateItem: store.updateItem,
-        })
-      ),
-    }),
+    (type: "create" | "update", id?: number) => {
+      return {
+        title: `${type === "create" ? "Create" : "Edit"} a Task`,
+        handleOnSave:
+          type === "create"
+            ? store.addItem
+            : () => store.updateItem(id!, "", ""),
+        fields: store.fieldSchema.map((field) =>
+          fieldMappingForDialog({
+            field,
+            type,
+            newItem: store.newItem,
+            items: store.items,
+            editingId: store.editingId,
+            updateNewItem: store.updateNewItem,
+            updateItem: store.updateItem,
+          })
+        ),
+      };
+    },
     [store]
   );
 
   const editingDialog = useCallback(
-    (index: number) => (
-      <DialogForm schema={schemaForDialog("update", index)}>
+    (id: number) => (
+      <DialogForm schema={schemaForDialog("update", id)}>
         <button
           className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 cursor-pointer m-1"
-          onClick={() => store.setEditingIndex(index)}
+          onClick={() => store.setEditingId(id)}
         >
           <p>Open</p>
           <Edit className="w-4 h-4" />

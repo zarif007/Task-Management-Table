@@ -6,10 +6,11 @@ import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
 import { IItem, IItemStore } from "@/interfaces/store";
 import Select from "../Select";
+import TableSearchFilter from "./TableSearchFilter";
 
 interface TableProps {
   store: IItemStore;
-  editingDialog: (index: number) => React.JSX.Element;
+  editingDialog: (id: number) => React.JSX.Element;
 }
 
 const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
@@ -128,35 +129,13 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
   return (
     <div className="w-full overflow-x-auto h-screen">
       <div className="min-w-[800px]">
-        <div className="flex  gap-2 mb-4">
-          <div className="">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="text-primary bg-gray-900 rounded-md border-none h-full focus:outline-none px-6 py-3 font-semibold"
-            />
-          </div>
-
-          <div className="flex gap-2">
-            {fieldSchema
-              .filter((field) => field.component === "Select")
-              .map((field) => (
-                <div
-                  key={field.name}
-                  className="text-primary bg-gray-900 rounded-md border-none h-full focus:outline-none p-0 font-semibold"
-                >
-                  <Select
-                    value={filters[field.name] || `All`}
-                    onSelect={(value) => handleFilterChange(field.name, value)}
-                    options={["All", ...(field.options ?? [])]}
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
-
+        <TableSearchFilter
+          searchKeyword={searchKeyword}
+          setSearchKeyword={setSearchKeyword}
+          fieldSchema={fieldSchema}
+          filters={filters}
+          handleFilterChange={handleFilterChange}
+        />
         <table className="w-full mt-4">
           <TableHeader
             fieldSchema={fieldSchema}

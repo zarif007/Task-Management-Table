@@ -9,8 +9,8 @@ export interface IItemStore {
   items: IItem[];
   fieldSchema: IComponentConfig[];
   newItem: IItem;
-  editingIndex: number;
-  setEditingIndex: (index: number) => void;
+  editingId: number;
+  setEditingId: (id: number) => void;
   updateNewItem: (field: keyof IItem, value: string | boolean | number) => void;
   updateItem: (
     id: number,

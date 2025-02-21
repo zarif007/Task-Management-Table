@@ -25,7 +25,7 @@ interface DialogFieldMappingProps {
   type: "create" | "update";
   newItem: Item;
   items: Item[] | [];
-  editingIndex: number;
+  editingId: number;
   updateNewItem: (field: string, value: string | number | boolean) => void;
   updateItem: (
     id: number,
@@ -45,16 +45,13 @@ const getCurrentValue = (
   type: "create" | "update",
   newTask: Item,
   tasks: Item[],
-  editingIndex: number
+  editingId: number
 ) => {
   if (type === "create") {
     return newTask[fieldName];
   } else {
-    if (tasks.length > 0 && editingIndex >= 0 && editingIndex < tasks.length) {
-      return tasks[editingIndex][fieldName] ?? "";
-    } else {
-      return "";
-    }
+    const task = tasks.find((task) => task.id === editingId);
+    return task ? task[fieldName] ?? "" : "";
   }
 };
 
@@ -69,11 +66,11 @@ const handleUpdate = (
     value: string | boolean | number
   ) => void,
   tasks: Item[],
-  editingIndex: number
+  editingId: number
 ) => {
   type === "create"
     ? updateNewItem(fieldName, value)
-    : updateItem(tasks[editingIndex].id, fieldName, value);
+    : updateItem(editingId, fieldName, value);
 };
 
 export const fieldMappingForTable = ({
@@ -128,7 +125,7 @@ export const fieldMappingForDialog = ({
   type,
   newItem,
   items,
-  editingIndex,
+  editingId,
   updateNewItem,
   updateItem,
 }: DialogFieldMappingProps) => {
@@ -137,7 +134,7 @@ export const fieldMappingForDialog = ({
     type,
     newItem,
     items,
-    editingIndex
+    editingId
   );
 
   const renderField = () => {
@@ -157,7 +154,7 @@ export const fieldMappingForDialog = ({
                 updateNewItem,
                 updateItem,
                 items,
-                editingIndex
+                editingId
               )
             }
           />
@@ -177,7 +174,7 @@ export const fieldMappingForDialog = ({
                   updateNewItem,
                   updateItem,
                   items,
-                  editingIndex
+                  editingId
                 )
               }
             />
@@ -196,7 +193,7 @@ export const fieldMappingForDialog = ({
                 updateNewItem,
                 updateItem,
                 items,
-                editingIndex
+                editingId
               )
             }
           />

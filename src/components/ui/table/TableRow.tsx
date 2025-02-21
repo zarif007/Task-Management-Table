@@ -15,7 +15,7 @@ interface TableRowProps {
     field: string,
     value: string | boolean | number
   ) => void;
-  editingDialog: (index: number) => React.JSX.Element;
+  editingDialog: (id: number) => React.JSX.Element;
 }
 
 const TableRow: React.FC<TableRowProps> = ({
@@ -54,7 +54,7 @@ const TableRow: React.FC<TableRowProps> = ({
                 field,
                 handleUpdate,
               })}
-              {field.isDialogOpener && editingDialog(index)}
+              {field.isDialogOpener && editingDialog(item.id)}
             </div>
           </div>
         </td>

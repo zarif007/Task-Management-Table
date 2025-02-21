@@ -9,8 +9,8 @@ interface ItemStore {
   items: IItem[];
   fieldSchema: IComponentConfig[];
   newItem: IItem;
-  editingIndex: number;
-  setEditingIndex: (index: number) => void;
+  editingId: number;
+  setEditingId: (index: number) => void;
   updateNewItem: (field: keyof IItem, value: string | boolean | number) => void;
   updateItem: (
     id: number,
@@ -66,9 +66,9 @@ export const useItemStore = create<ItemStore>()(
         status: "not_started",
         createdAt: "",
       },
-      editingIndex: 0,
+      editingId: 0,
       _hasHydrated: false,
-      setEditingIndex: (index) => set({ editingIndex: index }),
+      setEditingId: (index) => set({ editingId: index }),
       updateNewItem: (field, value) =>
         set((state) => ({
           newItem: { ...state.newItem, [field]: value },
