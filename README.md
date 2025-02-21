@@ -1,6 +1,4 @@
-Here’s the updated version with **"Keep it simple"** included! 🚀
-
----
+![Task Management Banner](https://i.ibb.co/0yTGdw02/Screenshot-2025-02-22-at-2-49-25-AM.png)
 
 # 📝 Task Management
 
@@ -14,20 +12,20 @@ You can **add, edit, delete, and manage tasks** effortlessly, with extra goodies
 ### ✅ Basic Task Management (CRUD)
 
 - See all your tasks in a **clean table view**
-- **Add new tasks** with a modal or slideout
-- **Edit tasks** inline or in a modal
-- **Delete tasks** (with a confirmation so you don’t accidentally nuke something important)
+- **➕ Add new tasks** with a modal or slideout
+- **✏️ Edit tasks** inline or in a modal
+- **🗑️ Delete tasks** (with a confirmation so you don’t accidentally nuke something important)
 
 ### 🔎 Sorting & Filtering
 
 - Click on column headers to **sort tasks** (with a tiny arrow to show order)
-- **Filter** by title, priority, or status
+- **🔍 Filter** by title, priority, or status
 - Works smoothly together for a **better experience**
 
 ### 📄 Pagination
 
 - Choose how many tasks to display (**10, 20, or 50 per page**)
-- **Easy navigation** between pages
+- **⏩ Easy navigation** between pages
 - Change page size anytime
 
 ### 💾 Data Persistence
@@ -38,7 +36,7 @@ You can **add, edit, delete, and manage tasks** effortlessly, with extra goodies
 ### 🛠️ Custom Fields
 
 - Add/remove **custom fields** for extra flexibility
-- Supports **text, number, and checkbox** fields
+- Supports **📝 Text, 🔢 Number, and ✅ Checkbox** fields
 - Sorting, filtering, and editing **still work perfectly**
 
 ---
@@ -47,29 +45,30 @@ You can **add, edit, delete, and manage tasks** effortlessly, with extra goodies
 
 ### ✅ Bulk Selection & Deletion
 
-- **Select multiple tasks** at once with checkboxes
-- **Select All** for quick actions
-- **Bulk delete** with a confirmation prompt
+- **☑️ Select multiple tasks** at once with checkboxes
+- **☑️ Select All** for quick actions
+- **🗑️ Bulk delete** with a confirmation prompt
 
 ### 🎯 Kanban View
 
-- **Drag & drop tasks** in priority-based columns
-- **Manually reorder** tasks however you like
-- **Inline task creation** (tasks inherit the column's priority)
-- **Order stays saved** after reloading
+- **📌 Drag & drop tasks** in priority-based columns
+- **📦 Manually reorder** tasks however you like
+- **➕ Inline task creation** (tasks inherit the column's priority)
+- **💾 Order stays saved** after reloading
 
 ---
 
 ## 💡 Keep It Simple
 
-The goal is to **keep things clean, intuitive, and hassle-free**. No unnecessary complexity—just **smooth task management** that works.
+The goal is to **keep things clean, intuitive, and hassle-free**.  
+No unnecessary complexity—just **smooth task management** that works.
 
 ---
 
 ## 🛠️ Tech Stack
 
-![Next.js](https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg) **Next.js** – For the framework  
-![Zustand](https://zustand-demo.pmnd.rs/favicon.ico) **Zustand** – For state management
+- **⚡ Next.js** (🚀 Framework)
+- **🐻 Zustand** (📦 State Management)
 
 ---
 
