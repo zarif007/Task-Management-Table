@@ -32,7 +32,7 @@ export default function Select({
               {value}
             </div>
           </ListboxButton>
-          <ListboxOptions className="absolute m-1 min-w-[60px] w-full bg-black border border-secondary rounded-lg shadow-lg max-h-60 overflow-auto z-50">
+          <ListboxOptions className="absolute m-1 min-w-[80px] max-w-[400px] bg-black border border-secondary rounded-lg shadow-lg max-h-60 overflow-auto z-50">
             {options.map((option, index) => (
               <ListboxOption
                 key={index}

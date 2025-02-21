@@ -5,7 +5,7 @@ export interface IItem {
   [key: string]: string | boolean | number;
 }
 
-export interface ItemStore {
+export interface IItemStore {
   items: IItem[];
   fieldSchema: IComponentConfig[];
   newItem: IItem;

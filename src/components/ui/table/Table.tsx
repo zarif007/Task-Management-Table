@@ -4,10 +4,11 @@ import React, { useState, useCallback, useEffect, useMemo } from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
-import { IItem, ItemStore } from "@/interfaces/store";
+import { IItem, IItemStore } from "@/interfaces/store";
+import Select from "../Select";
 
 interface TableProps {
-  store: ItemStore;
+  store: IItemStore;
   editingDialog: (index: number) => React.JSX.Element;
 }
 
@@ -25,11 +26,31 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortField, setSortField] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [sortedItems, setSortedItems] = useState<any[]>(items);
+  const [sortedItems, setSortedItems] = useState<IItem[]>(items);
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [filters, setFilters] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    setSortedItems(items);
-  }, [items]);
+    let filteredItems = items;
+
+    if (searchKeyword) {
+      filteredItems = filteredItems.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchKeyword.toLowerCase())
+        )
+      );
+    }
+
+    fieldSchema.forEach((field) => {
+      if (field.component === "Select" && filters[field.name]) {
+        filteredItems = filteredItems.filter(
+          (item) => item[field.name] === filters[field.name]
+        );
+      }
+    });
+
+    setSortedItems(filteredItems);
+  }, [items, searchKeyword, filters, fieldSchema]);
 
   const allSelected = useMemo(() => {
     return items.length > 0 && selectedRows.length === items.length;
@@ -77,7 +98,7 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
         direction = sortDirection === "asc" ? "desc" : "asc";
       }
 
-      const sorted = [...items].sort((a, b) => {
+      const sorted = [...sortedItems].sort((a, b) => {
         if (a[fieldName] < b[fieldName]) return direction === "asc" ? -1 : 1;
         if (a[fieldName] > b[fieldName]) return direction === "asc" ? 1 : -1;
         return 0;
@@ -87,12 +108,55 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
       setSortField(fieldName);
       setSortDirection(direction);
     },
-    [items, sortField, sortDirection]
+    [sortedItems, sortField, sortDirection]
   );
+
+  const handleFilterChange = useCallback((fieldName: string, value: string) => {
+    setFilters((prevFilters) => {
+      if (value === "All") {
+        const { [fieldName]: _, ...rest } = prevFilters;
+        return rest;
+      } else {
+        return {
+          ...prevFilters,
+          [fieldName]: value,
+        };
+      }
+    });
+  }, []);
 
   return (
     <div className="w-full overflow-x-auto h-screen">
       <div className="min-w-[800px]">
+        <div className="flex  gap-2 mb-4">
+          <div className="">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              className="text-primary bg-gray-900 rounded-md border-none h-full focus:outline-none px-6 py-3 font-semibold"
+            />
+          </div>
+
+          <div className="flex gap-2">
+            {fieldSchema
+              .filter((field) => field.component === "Select")
+              .map((field) => (
+                <div
+                  key={field.name}
+                  className="text-primary bg-gray-900 rounded-md border-none h-full focus:outline-none p-0 font-semibold"
+                >
+                  <Select
+                    value={filters[field.name] || `All`}
+                    onSelect={(value) => handleFilterChange(field.name, value)}
+                    options={["All", ...(field.options ?? [])]}
+                  />
+                </div>
+              ))}
+          </div>
+        </div>
+
         <table className="w-full mt-4">
           <TableHeader
             fieldSchema={fieldSchema}
