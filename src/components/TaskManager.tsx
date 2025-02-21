@@ -1,13 +1,21 @@
 "use client";
 
 import React, { useCallback } from "react";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import Table from "./ui/table/Table";
-import { Edit, Pickaxe, Plus } from "lucide-react";
+import {
+  Edit,
+  Kanban as KanbanIcon,
+  Pickaxe,
+  Plus,
+  Table2,
+} from "lucide-react";
 import DialogForm from "./ui/Dialog.form";
 import { fieldMappingForDialog } from "./FieldMappings";
 import { useItemStore } from "@/store/taskManagement";
+import Kanban from "./ui/Kanban";
 
-const TaskManagementTable = () => {
+const TaskManager = () => {
   const store = useItemStore();
   const schemaForDialog = useCallback(
     (type: "create" | "update", id?: number) => {
@@ -60,9 +68,40 @@ const TaskManagementTable = () => {
           </button>
         </DialogForm>
       </div>
-      <Table store={store} editingDialog={editingDialog} />
+
+      <TabGroup>
+        <TabList className="flex space-x-1 rounded-xl p-1">
+          {[
+            { name: "Table", icon: <Table2 /> },
+            { name: "Kanban", icon: <KanbanIcon /> },
+          ].map((item) => (
+            <Tab
+              key={item.name}
+              className={({ selected }) =>
+                `flex items-center justify-center rounded-md py-2 px-4 text-md font-bold
+               ${
+                 selected
+                   ? "bg-secondary text-black shadow"
+                   : "bg-gray-900 text-white"
+               }`
+              }
+            >
+              {item.icon}
+              <p>{item.name}</p>
+            </Tab>
+          ))}
+        </TabList>
+        <TabPanels className="mt-2">
+          <TabPanel className={`rounded-xl`}>
+            <Table store={store} editingDialog={editingDialog} />
+          </TabPanel>
+          <TabPanel className={`rounded-xl`}>
+            <Kanban store={store} />
+          </TabPanel>
+        </TabPanels>
+      </TabGroup>
     </div>
   );
 };
 
-export default TaskManagementTable;
+export default TaskManager;

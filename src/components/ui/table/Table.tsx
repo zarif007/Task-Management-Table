@@ -90,7 +90,7 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
   const handleDeleteRows = useCallback(() => {
     handleDelete(selectedRows);
     setSelectedRows([]);
-  }, [handleDelete, selectedRows]);
+  }, [handleDelete, selectedRows, paginatedItems]);
 
   const handleSort = useCallback(
     (fieldName: string) => {

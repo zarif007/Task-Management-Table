@@ -1,9 +1,9 @@
-import TaskManagementTable from "@/components/TaskManagementTable";
+import TaskManager from "@/components/TaskManager";
 
 export default function Home() {
   return (
     <div>
-      <TaskManagementTable />
+      <TaskManager />
     </div>
   );
 }

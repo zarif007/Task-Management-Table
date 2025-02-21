@@ -95,7 +95,6 @@ export const useItemStore = create<IItemStore>()(
       onRehydrateStorage: () => (state) => {
         if (!state) return;
 
-        // Ensure state is fully hydrated before checking items
         if (state.items.length === 0) {
           state.items = mockData;
         }
