@@ -14,6 +14,7 @@ import DialogForm from "./ui/Dialog.form";
 import { fieldMappingForDialog } from "./FieldMappings";
 import { useItemStore } from "@/store/taskManagement";
 import Kanban from "./ui/Kanban";
+import { taskPriority } from "@/constants/table";
 
 const TaskManager = () => {
   const store = useItemStore();
@@ -96,7 +97,7 @@ const TaskManager = () => {
             <Table store={store} editingDialog={editingDialog} />
           </TabPanel>
           <TabPanel className={`rounded-xl`}>
-            <Kanban store={store} />
+            <Kanban basedOn="priority" columns={taskPriority} store={store} />
           </TabPanel>
         </TabPanels>
       </TabGroup>
