@@ -1,5 +1,7 @@
 # 📝 Task Management
 
+![Banner](https://i.ibb.co.com/0yTGdw02/Screenshot-2025-02-22-at-2-49-25-AM.png)
+
 ## ✨ What’s This?
 
 A **simple yet powerful** task management system to help you stay organized.  
@@ -76,4 +78,4 @@ The **UI design** of this task manager is inspired by [Great Frontend](https://w
 
 ---
 
-That’s it! **No fluff, just a clean and efficient task manager.** 🚀
+That’s it! **No fluff, just a clean and efficient task manager.**
