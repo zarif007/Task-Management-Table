@@ -1,37 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Here’s the updated version with **"Keep it simple"** included! 🚀
 
-## Getting Started
+---
 
-First, run the development server:
+# 📝 Task Management
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ What’s This?
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+A **simple yet powerful** task management system to help you stay organized.  
+You can **add, edit, delete, and manage tasks** effortlessly, with extra goodies like **sorting, filtering, pagination, bulk actions, and a Kanban board**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ✅ Basic Task Management (CRUD)
 
-## Learn More
+- See all your tasks in a **clean table view**
+- **Add new tasks** with a modal or slideout
+- **Edit tasks** inline or in a modal
+- **Delete tasks** (with a confirmation so you don’t accidentally nuke something important)
 
-To learn more about Next.js, take a look at the following resources:
+### 🔎 Sorting & Filtering
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Click on column headers to **sort tasks** (with a tiny arrow to show order)
+- **Filter** by title, priority, or status
+- Works smoothly together for a **better experience**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 📄 Pagination
 
-## Deploy on Vercel
+- Choose how many tasks to display (**10, 20, or 50 per page**)
+- **Easy navigation** between pages
+- Change page size anytime
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 💾 Data Persistence
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Task-Management-Table
+- Tasks are saved in `localStorage` so they **stick around after reloads**
+- Everything updates automatically as you make changes
+
+### 🛠️ Custom Fields
+
+- Add/remove **custom fields** for extra flexibility
+- Supports **text, number, and checkbox** fields
+- Sorting, filtering, and editing **still work perfectly**
+
+---
+
+## 🎁 Bonus Features
+
+### ✅ Bulk Selection & Deletion
+
+- **Select multiple tasks** at once with checkboxes
+- **Select All** for quick actions
+- **Bulk delete** with a confirmation prompt
+
+### 🎯 Kanban View
+
+- **Drag & drop tasks** in priority-based columns
+- **Manually reorder** tasks however you like
+- **Inline task creation** (tasks inherit the column's priority)
+- **Order stays saved** after reloading
+
+---
+
+## 💡 Keep It Simple
+
+The goal is to **keep things clean, intuitive, and hassle-free**. No unnecessary complexity—just **smooth task management** that works.
+
+---
+
+## 🛠️ Tech Stack
+
+![Next.js](https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg) **Next.js** – For the framework  
+![Zustand](https://zustand-demo.pmnd.rs/favicon.ico) **Zustand** – For state management
+
+---
+
+That’s it! **No fluff, just a clean and efficient task manager.** 🚀

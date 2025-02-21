@@ -88,7 +88,6 @@ const CreateField = ({
 
     onAddField(newFieldObject);
 
-    // Reset form
     setNewField({
       id: 0,
       name: "",
