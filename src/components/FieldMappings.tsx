@@ -68,9 +68,11 @@ const handleUpdate = (
   tasks: Item[],
   editingId: number
 ) => {
-  type === "create"
-    ? updateNewItem(fieldName, value)
-    : updateItem(editingId, fieldName, value);
+  if (type === "create") {
+    updateNewItem(fieldName, value);
+  } else {
+    updateItem(editingId, fieldName, value);
+  }
 };
 
 export const fieldMappingForTable = ({

@@ -43,10 +43,10 @@ const TaskManager = () => {
   );
 
   const editingDialog = useCallback(
-    (id: number) => (
+    (id: number, opacity: number = 0) => (
       <DialogForm schema={schemaForDialog("update", id)}>
         <button
-          className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 cursor-pointer m-1"
+          className={`flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-${opacity} group-hover:opacity-100 cursor-pointer m-1`}
           onClick={() => store.setEditingId(id)}
         >
           <p>Open</p>
@@ -97,7 +97,13 @@ const TaskManager = () => {
             <Table store={store} editingDialog={editingDialog} />
           </TabPanel>
           <TabPanel className={`rounded-xl`}>
-            <Kanban basedOn="priority" columns={taskPriority} store={store} />
+            <Kanban
+              basedOn="priority"
+              columns={taskPriority}
+              store={store}
+              editingDialog={editingDialog}
+              schemaForDialog={schemaForDialog}
+            />
           </TabPanel>
         </TabPanels>
       </TabGroup>

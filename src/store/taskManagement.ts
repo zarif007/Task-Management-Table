@@ -37,7 +37,7 @@ const defaultFieldSchema: IComponentConfig[] = [
 
 export const useItemStore = create<IItemStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       items: [],
       fieldSchema: defaultFieldSchema,
       newItem: {

@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Checkbox } from "../Checkbox";
-import DialogForm from "../Dialog.form";
-import { Plus, Settings } from "lucide-react";
-import { fieldMappingForDialog } from "../../FieldMappings";
+import { Settings } from "lucide-react";
 import TableFieldsDialog from "./TableFields.dialog";
 import { IComponentConfig } from "@/interfaces/task";
 

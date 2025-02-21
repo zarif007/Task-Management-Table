@@ -90,7 +90,7 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
   const handleDeleteRows = useCallback(() => {
     handleDelete(selectedRows);
     setSelectedRows([]);
-  }, [handleDelete, selectedRows, paginatedItems]);
+  }, [handleDelete, selectedRows]);
 
   const handleSort = useCallback(
     (fieldName: string) => {
@@ -116,6 +116,7 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
   const handleFilterChange = useCallback((fieldName: string, value: string) => {
     setFilters((prevFilters) => {
       if (value === "All") {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [fieldName]: _, ...rest } = prevFilters;
         return rest;
       } else {

@@ -37,7 +37,7 @@ export default function Select({
               <ListboxOption
                 key={index}
                 value={option}
-                className={({ active }) =>
+                className={() =>
                   clsx(
                     "cursor-pointer select-none px-2 py-1 hover:bg-secondary hover:text-black"
                   )
