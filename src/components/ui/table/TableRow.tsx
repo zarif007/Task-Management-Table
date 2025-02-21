@@ -28,12 +28,12 @@ const TableRow: React.FC<TableRowProps> = ({
   editingDialog,
 }) => {
   return (
-    <tr className={`${selectedRows.includes(index) && "bg-gray-900"}`}>
+    <tr className={`${selectedRows.includes(item.id) && "bg-gray-900"}`}>
       <td className="text-md font-semibold text-primary border-b border-gray-800 w-1/12">
         <div className="flex items-center justify-center py-4">
           <Checkbox
-            checked={selectedRows.includes(index)}
-            onCheckedChange={() => toggleRow(index)}
+            checked={selectedRows.includes(item.id)}
+            onCheckedChange={() => toggleRow(item.id)}
           />
         </div>
       </td>

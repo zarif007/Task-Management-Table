@@ -19,24 +19,23 @@ const TableSearchFilter: React.FC<TableSearchFilterProps> = ({
 }) => {
   return (
     <div className="flex gap-2 mb-4">
-      {/* Search Input */}
       <input
         type="text"
         placeholder="Search..."
         value={searchKeyword}
         onChange={(e) => setSearchKeyword(e.target.value)}
-        className="text-primary bg-gray-900 rounded-md border-none h-full focus:outline-none px-6 py-3 font-semibold"
+        className="text-primary bg-gray-900 rounded-md border-none h-full focus:outline-none px-6 py-4 font-semibold"
       />
 
-      {/* Filters */}
       <div className="flex gap-2">
         {fieldSchema
           .filter((field) => field.component === "Select")
           .map((field) => (
             <div
               key={field.name}
-              className="text-primary bg-gray-900 rounded-md border-none h-full focus:outline-none p-0 font-semibold"
+              className="flex items-center text-primary bg-gray-900 rounded-md border-none h-full focus:outline-none py-0 pl-2 font-semibold"
             >
+              <p>{field.header}</p>
               <Select
                 value={filters[field.name] || `All`}
                 onSelect={(value) => handleFilterChange(field.name, value)}

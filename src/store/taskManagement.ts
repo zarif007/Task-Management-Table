@@ -3,26 +3,7 @@ import { persist } from "zustand/middleware";
 import { IComponentConfig } from "@/interfaces/task";
 import { getCurrentDate } from "@/utils/getCurrentDate";
 import { mockData, taskPriority, taskStatus } from "@/constants/table";
-import { IItem } from "@/interfaces/store";
-
-interface ItemStore {
-  items: IItem[];
-  fieldSchema: IComponentConfig[];
-  newItem: IItem;
-  editingId: number;
-  setEditingId: (index: number) => void;
-  updateNewItem: (field: keyof IItem, value: string | boolean | number) => void;
-  updateItem: (
-    id: number,
-    field: keyof IItem,
-    value: string | boolean | number
-  ) => void;
-  deleteItem: (selectedRows: number[]) => void;
-  addItem: () => void;
-  setFieldSchema: (fieldSchema: IComponentConfig[]) => void;
-  _hasHydrated: boolean;
-  setHasHydrated: (hasHydrated: boolean) => void;
-}
+import { IItemStore } from "@/interfaces/store";
 
 const defaultFieldSchema: IComponentConfig[] = [
   {
@@ -54,10 +35,10 @@ const defaultFieldSchema: IComponentConfig[] = [
   },
 ];
 
-export const useItemStore = create<ItemStore>()(
+export const useItemStore = create<IItemStore>()(
   persist(
     (set, get) => ({
-      items: [], // Initialize with an empty array
+      items: [],
       fieldSchema: defaultFieldSchema,
       newItem: {
         id: 0,
@@ -81,9 +62,7 @@ export const useItemStore = create<ItemStore>()(
         })),
       deleteItem: (selectedRows) =>
         set((state) => ({
-          items: state.items.filter(
-            (_, index) => !selectedRows.includes(index)
-          ),
+          items: state.items.filter((item) => !selectedRows.includes(item.id)),
         })),
       addItem: () =>
         set((state) => {
@@ -114,7 +93,14 @@ export const useItemStore = create<ItemStore>()(
         fieldSchema: state.fieldSchema,
       }),
       onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+        if (!state) return;
+
+        // Ensure state is fully hydrated before checking items
+        if (state.items.length === 0) {
+          state.items = mockData;
+        }
+
+        state.setHasHydrated(true);
       },
     }
   )

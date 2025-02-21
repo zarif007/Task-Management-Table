@@ -5,7 +5,6 @@ import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
 import { IItem, IItemStore } from "@/interfaces/store";
-import Select from "../Select";
 import TableSearchFilter from "./TableSearchFilter";
 
 interface TableProps {
@@ -53,17 +52,26 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
     setSortedItems(filteredItems);
   }, [items, searchKeyword, filters, fieldSchema]);
 
+  const paginatedItems = useMemo(() => {
+    return sortedItems.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+  }, [sortedItems, currentPage, itemsPerPage]);
+
   const allSelected = useMemo(() => {
-    return items.length > 0 && selectedRows.length === items.length;
-  }, [items.length, selectedRows.length]);
+    return (
+      paginatedItems.length > 0 && selectedRows.length === paginatedItems.length
+    );
+  }, [paginatedItems.length, selectedRows.length]);
 
   const toggleAll = useCallback(
     (checked: boolean) => {
       setSelectedRows(
-        checked ? items.map((_: IItem, index: number) => index) : []
+        checked ? paginatedItems.map((item: IItem) => item.id) : []
       );
     },
-    [items]
+    [paginatedItems]
   );
 
   const toggleRow = useCallback((rowIndex: number) => {
@@ -74,22 +82,15 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
     );
   }, []);
 
-  const handleDeleteRows = useCallback(() => {
-    handleDelete(selectedRows);
-    setSelectedRows([]);
-  }, [handleDelete, selectedRows]);
-
   const totalPages = useMemo(
     () => Math.ceil(sortedItems.length / itemsPerPage),
     [sortedItems.length, itemsPerPage]
   );
 
-  const paginatedFields = useMemo(() => {
-    return sortedItems.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    );
-  }, [sortedItems, currentPage, itemsPerPage]);
+  const handleDeleteRows = useCallback(() => {
+    handleDelete(selectedRows);
+    setSelectedRows([]);
+  }, [handleDelete, selectedRows]);
 
   const handleSort = useCallback(
     (fieldName: string) => {
@@ -147,7 +148,7 @@ const Table: React.FC<TableProps> = ({ store, editingDialog }) => {
             sortDirection={sortDirection}
           />
           <tbody>
-            {paginatedFields.map((item, index) => (
+            {paginatedItems.map((item, index) => (
               <TableRow
                 key={index}
                 item={item}
