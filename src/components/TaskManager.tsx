@@ -43,7 +43,7 @@ const TaskManager = () => {
   );
 
   const editingDialog = useCallback(
-    (id: number, opacity: number = 0) => (
+    (id: number) => (
       <DialogForm schema={schemaForDialog("update", id)}>
         <button
           className="flex items-center justify-center gap-1 text-gray-400 bg-gray-900 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer m-1"
